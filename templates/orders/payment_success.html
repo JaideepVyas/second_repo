@@ -1,0 +1,24 @@
+<!-- templates/orders/payment_success.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="alert alert-success text-center">
+                <i class="bi bi-check-circle-fill text-success display-1"></i>
+                <h4 class="mt-3">Payment Successful!</h4>
+                <p>Your order has been placed successfully.</p>
+                <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+                <p><strong>Status:</strong> {{ order.status }}</p>
+                <p><strong>Total Amount:</strong> ${{ order.total_amount }}</p>
+                
+                <div class="mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-primary">Continue Shopping</a>
+                    <a href="{% url 'order_detail' order_id=order.id %}" class="btn btn-outline-primary">View Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+<!-- templates/orders/payment.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Payment</h2>
+    
+    {% if order %}
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Payment Information</h5>
+                        <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+                        <p><strong>Total Amount:</strong> ${{ order.total_amount }}</p>
+                        
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="payment_method" class="form-label">Payment Method</label>
+                                <select class="form-control" id="payment_method" name="payment_method" required>
+                                    {% for value, label in payment_methods %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Proceed to Payment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Order Summary</h5>
+                        <ul class="list-group list-group-flush">
+                            {% for item in order.items.all %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>{{ item.product.name }}</span>
+                                <span>${{ item.price }}</span>
+                            </li>
+                            {% endfor %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Total</strong>
+                                <strong>${{ order.total_amount }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-danger">
+            Order not found. Please go back to checkout.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

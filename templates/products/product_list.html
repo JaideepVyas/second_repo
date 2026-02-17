@@ -1,0 +1,109 @@
+<!-- templates/products/product_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+/* ===== Full Screen Background Slider ===== */
+.background-slider {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+}
+
+.background-slider img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(15px);
+    opacity: 0;
+    animation: slideShow 18s infinite;
+}
+
+/* Each image delay */
+.background-slider img:nth-child(1) { animation-delay: 0s; }
+.background-slider img:nth-child(2) { animation-delay: 6s; }
+.background-slider img:nth-child(3) { animation-delay: 12s; }
+
+/* Animation */
+@keyframes slideShow {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    30% { opacity: 1; }
+    40% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* Dark overlay so text is readable */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+}
+
+/* Slight card polish */
+.card {
+    border-radius: 12px;
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+</style>
+
+
+<!-- Background Images -->
+<div class="background-slider">
+    <!-- You can change these image URLs -->
+    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e">
+    <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7">
+    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30">
+</div>
+
+<div class="background-overlay"></div>
+
+
+<div class="container py-5">
+    <h2 class="mb-4 text-white">Products</h2>
+    
+    {% if category %}
+        <h3 class="text-white">Category: {{ category.name }}</h3>
+    {% endif %}
+    
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">Price: ${{ product.price }}</p>
+                    <p class="card-text">Stock: {{ product.stock }}</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'product_detail' product_slug=product.slug %}" class="btn btn-outline-primary">View Details</a>
+                        <a href="{% url 'cart_add' product_id=product.id %}" class="btn btn-outline-success">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

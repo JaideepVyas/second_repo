@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* ===== Scenic Blurred Background Page ===== */
+
+.cart-page {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Scenic Background Image */
+.cart-page::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://images.unsplash.com/photo-1501785888041-af3ef285b470");
+    background-size: cover;
+    background-position: center;
+    filter: blur(12px);
+    transform: scale(1.1);
+    z-index: -2;
+}
+
+/* Dark Gradient Overlay */
+.cart-page::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.6),
+        rgba(0, 0, 0, 0.4)
+    );
+    z-index: -1;
+}
+
+/* Glass Container */
+.cart-container {
+    margin-top: 80px;
+    margin-bottom: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    color: white;
+}
+
+/* Title */
+.cart-container h2 {
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* Table Styling */
+.cart-table {
+    color: white;
+}
+
+.cart-table th {
+    font-weight: 600;
+}
+
+.cart-table td,
+.cart-table th {
+    vertical-align: middle;
+    text-align: center;
+    padding: 15px;
+}
+
+.cart-table td:first-child {
+    text-align: left;
+}
+
+/* Product Image */
+.cart-img {
+    border-radius: 10px;
+    margin-right: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* Product Name Styling (Now Always Visible) */
+.cart-table a {
+    text-decoration: none;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.cart-table a:hover {
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 10px;
+    padding: 6px 14px;
+}
+
+/* Empty Cart */
+.alert-info {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    border-radius: 15px;
+}
+
+</style>
+
+<div class="cart-page">
+    <div class="container cart-container">
+        <h2 class="text-center">🛒 Shopping Cart</h2>
+        
+        {% if cart_items %}
+            <div class="table-responsive">
+                <table class="table table-borderless cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <img src="{{ item.product.image.url }}" 
+                                     alt="{{ item.product.name }}" 
+                                     width="80"
+                                     class="cart-img">
+                                <a href="{% url 'product_detail' product_slug=item.product.slug %}">
+                                    {{ item.product.name }}
+                                </a>
+                            </td>
+                            <td>${{ item.product.price }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.subtotal }}</td>
+                            <td>
+                                <a href="{% url 'cart_remove' product_id=item.product.id %}" 
+                                   class="btn btn-sm btn-danger">
+                                   Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                            <td colspan="2"><strong>${{ total_price }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'product_list' %}" class="btn btn-outline-light">
+                    Continue Shopping
+                </a>
+                <a href="{% url 'checkout' %}" class="btn btn-warning">
+                    Proceed to Checkout
+                </a>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                Your cart is empty. 
+                <a href="{% url 'product_list' %}" class="alert-link text-white">
+                    Start shopping
+                </a>.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
